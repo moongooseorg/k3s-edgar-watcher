@@ -12,16 +12,19 @@ namespace EdgarWatcher.Features.Webhook;
 public class DiscordSecMessenger
 {
     private readonly HttpClient _httpClient;
-    private readonly EdgarWatcherSettings _settings;
+    private readonly EdgarWatcherSettings _edgarSettings;
+    private readonly NotificationSettings _notificationSettings;
     private readonly ILogger<DiscordSecMessenger> _logger;
 
     public DiscordSecMessenger(
         HttpClient httpClient,
-        IOptions<EdgarWatcherSettings> settings,
+        IOptions<EdgarWatcherSettings> edgarSettings,
+        IOptions<NotificationSettings> notificationSettings,
         ILogger<DiscordSecMessenger> logger)
     {
         _httpClient = httpClient;
-        _settings = settings.Value;
+        _edgarSettings = edgarSettings.Value;
+        _notificationSettings = notificationSettings.Value;
         _logger = logger;
     }
 
@@ -45,7 +48,7 @@ public class DiscordSecMessenger
     {
         return Observable.FromAsync(async () =>
         {
-            await PostToWebhook(_settings.HealthCheckWebhook, $"[{_settings.ServiceName}] {message}");
+            await PostToWebhook(_notificationSettings.HealthCheckWebhook, $"[{_edgarSettings.ServiceName}] {message}");
             return true;
         });
     }
@@ -57,7 +60,7 @@ public class DiscordSecMessenger
             content = $"@everyone {title}\n{url}"
         };
 
-        await PostToWebhook(_settings.DiscordWebhook, payload);
+        await PostToWebhook(_notificationSettings.DiscordWebhook, payload);
     }
 
     private async Task PostToWebhook(string webhookUrl, object payload)

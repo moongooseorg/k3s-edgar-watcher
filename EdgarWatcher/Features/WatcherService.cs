@@ -39,6 +39,7 @@ public class WatcherService : BackgroundService
             _ => { },
             ex => _logger.LogError(ex, "Failed to post startup health check"));
 
+        _logger.LogInformation("Watching tickers: {Tickers}", string.Join(", ", _settings.Tickers));
         _logger.LogInformation(
             "Edgar Watcher started - polling {Count} tickers every {Interval}ms",
             _tickerStores.Count,

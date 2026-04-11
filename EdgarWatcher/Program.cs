@@ -8,6 +8,9 @@ WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 builder.Services.Configure<EdgarWatcherSettings>(
     builder.Configuration.GetSection(EdgarWatcherSettings.SectionName));
 
+builder.Services.Configure<NotificationSettings>(
+    builder.Configuration.GetSection(NotificationSettings.SectionName));
+
 builder.Services.AddHttpClient<SecApiService>(client =>
 {
     string userAgent = builder.Configuration
