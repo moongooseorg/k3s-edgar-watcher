@@ -1,16 +1,28 @@
-using Bogus;
+using EdgarWatcher.Configuration;
+using EdgarWatcher.Features;
+using EdgarWatcher.Features.SecApi;
+using EdgarWatcher.Features.Webhook;
 
-var builder = WebApplication.CreateBuilder(args);
-var app = builder.Build();
+WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
-var faker = new Faker();
-app.MapGet("/hello", () => new
+builder.Services.Configure<EdgarWatcherSettings>(
+    builder.Configuration.GetSection(EdgarWatcherSettings.SectionName));
+
+builder.Services.AddHttpClient<SecApiService>(client =>
 {
-    message = "Hello, World!",
-    timestamp = DateTime.UtcNow,
-    funFact = faker.Hacker.Phrase(),
-    config = Environment.GetEnvironmentVariable("CONFIG") ?? "not set",
-    mySecret = Environment.GetEnvironmentVariable("MY_SECRET") ?? "not set"
+    string userAgent = builder.Configuration
+        .GetSection(EdgarWatcherSettings.SectionName)
+        .GetValue<string>("UserAgent") ?? "";
+    client.DefaultRequestHeaders.TryAddWithoutValidation("User-Agent", userAgent);
+}).ConfigurePrimaryHttpMessageHandler(() => new HttpClientHandler
+{
+    AutomaticDecompression = System.Net.DecompressionMethods.GZip | System.Net.DecompressionMethods.Deflate,
 });
+
+builder.Services.AddHttpClient<DiscordSecMessenger>();
+
+builder.Services.AddHostedService<WatcherService>();
+
+WebApplication app = builder.Build();
 
 app.Run();

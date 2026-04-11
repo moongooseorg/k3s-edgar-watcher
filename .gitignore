@@ -5,3 +5,5 @@ obj/
 *.tmp
 .vs/
 .claude/
+.idea/
+appsettings.json
