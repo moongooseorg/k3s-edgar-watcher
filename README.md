@@ -1,1 +1,1 @@
-# k3s-edgar-watcher
+# edgar-watcher
