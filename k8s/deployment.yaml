@@ -24,8 +24,6 @@ spec:
                 name: app-configs
             - secretRef:
                 name: app-secrets
-          ports:
-            - containerPort: 8080
           resources:
             requests:
               memory: "64Mi"
