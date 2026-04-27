@@ -2,6 +2,7 @@ using EdgarWatcher.Configuration;
 using EdgarWatcher.Features;
 using EdgarWatcher.Features.SecApi;
 using EdgarWatcher.Features.Webhook;
+using Microsoft.Extensions.Options;
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
@@ -27,5 +28,13 @@ builder.Services.AddHttpClient<DiscordSecMessenger>();
 builder.Services.AddHostedService<WatcherService>();
 
 WebApplication app = builder.Build();
+
+EdgarWatcherSettings startupSettings = app.Services
+    .GetRequiredService<IOptions<EdgarWatcherSettings>>().Value;
+ILogger<Program> startupLogger = app.Services.GetRequiredService<ILogger<Program>>();
+startupLogger.LogInformation(
+    "Configured to watch {Count} ticker(s): {Tickers}",
+    startupSettings.Tickers.Count,
+    string.Join(", ", startupSettings.Tickers));
 
 app.Run();
