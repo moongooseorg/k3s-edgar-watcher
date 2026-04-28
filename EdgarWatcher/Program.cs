@@ -9,6 +9,20 @@ WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 builder.Services.Configure<EdgarWatcherSettings>(
     builder.Configuration.GetSection(EdgarWatcherSettings.SectionName));
 
+builder.Services.PostConfigure<EdgarWatcherSettings>(settings =>
+{
+    string[] configuredTickers = builder.Configuration
+        .GetSection(EdgarWatcherSettings.SectionName)
+        .GetSection(nameof(EdgarWatcherSettings.Tickers))
+        .GetChildren()
+        .Select(child => child.Value ?? "")
+        .Where(value => !string.IsNullOrWhiteSpace(value))
+        .ToArray();
+
+    if (configuredTickers.Length > 0)
+        settings.Tickers = configuredTickers;
+});
+
 builder.Services.Configure<NotificationSettings>(
     builder.Configuration.GetSection(NotificationSettings.SectionName));
 
