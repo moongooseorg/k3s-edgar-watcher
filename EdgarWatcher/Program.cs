@@ -34,7 +34,7 @@ EdgarWatcherSettings startupSettings = app.Services
 ILogger<Program> startupLogger = app.Services.GetRequiredService<ILogger<Program>>();
 startupLogger.LogInformation(
     "Configured to watch {Count} ticker(s): {Tickers}",
-    startupSettings.Tickers.Count,
+    startupSettings.Tickers.Length,
     string.Join(", ", startupSettings.Tickers));
 
 app.Run();
