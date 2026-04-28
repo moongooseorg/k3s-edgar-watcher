@@ -9,5 +9,5 @@ public class EdgarWatcherSettings
     public int ServiceCallsResetInMilliseconds { get; set; } = 1000;
     public string ServiceName { get; set; } = "edgar-watcher";
     public string UserAgent { get; set; } = "";
-    public List<string> Tickers { get; set; } = ["TSLA"];
+    public string[] Tickers { get; set; } = ["TSLA"];
 }
